@@ -35,7 +35,7 @@ public class dataCollector {
             else{
                 timeDiff = timeDiff(line.get(2), Date);
             }
-            System.out.println(timeDiff);
+            //System.out.println(timeDiff);
             if((timeDiff*1.2) >= Integer.parseInt(line.get(3)) && notInList(line.get(0))){
                 recs.add(line.get(0));
             }

@@ -63,5 +63,32 @@ public class ApiController {
         sb.append("]");
         return sb.toString();
     }
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/api/getList")
+    public String getList() {
+        dataCollector dc = new dataCollector();
+        String[] shoppingList = dc.getShoppingList();
+        // break the array into json [A, B ] => ["A", "B"]
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < shoppingList.length; i++) {
+            sb.append("{"+"\"" + shoppingList[i] + "\""+"}");
+            if (i != shoppingList.length - 1) {
+                sb.append(",");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+    @CrossOrigin
+    @PostMapping
+    public void addList(){
+
+    }
+    @CrossOrigin
+    @PostMapping
+    public void removeList(){
+
+    }
 
 }

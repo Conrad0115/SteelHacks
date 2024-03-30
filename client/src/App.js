@@ -13,12 +13,8 @@ import "./App.css";
 
 function App() {
   const fileInputRef = useRef(null);
-  const [recommendation, setRecommendation] = useState([
-    "Eggs",
-    "Pear",
-    "Watermelon",
-  ]);
-
+  const [recommendation, setRecommendation] = useState([]);
+  
   useEffect(() => {
     fetch(process.env.REACT_APP_API_URL + "/api/recommendation")
       .then((response) => {
@@ -28,6 +24,21 @@ function App() {
       .then((data) => {
         console.log(data)
         setRecommendation(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + "/api/getList")
+      .then((response) => {
+        console.log(response);
+       return  response.json();
+      })
+      .then((data) => {
+        console.log(data)
+        setShoppingList(data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -86,7 +97,7 @@ function App() {
 
   // Current list
   const [shoppingList, setShoppingList] = useState([
-    { count: 1, name: "Eggs" },
+    { count: 1, name: "Cheddar" },
     { count: 2, name: "Bananas" },
     { count: 3, name: "Carrots" },
   ]);
@@ -132,7 +143,7 @@ function App() {
             padding: "10px",
           }}
         >
-          <h1>Title </h1>
+          <h1 >Smart Grocery List</h1>
           <Input
             type="file"
             inputProps={{ accept: "image/*, .pdf, video/*" }}
@@ -164,7 +175,9 @@ function App() {
                   !shoppingList.some((shoppingItem) => shoppingItem.name === item)
               )
               .map((item, index) => (
-                <ListItem key={index}>{item}</ListItem>
+                <ListItem key={index}>{item}
+                  <Button style={{marginLeft: 20}} variant="contained" size="small"  onClick={()=> handleAddNewItem(item)}>Add To List</Button>
+                </ListItem>
               ))}
           </List>
         </div>
