@@ -19,16 +19,32 @@ function App() {
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
 
-
     (async () => {
       const worker = await createWorker('eng');
       const ret = await worker.recognize(file);
-      console.log(ret.data.text);
+      const lines = ret.data.text.split('\n');
+      // Map each line to an object containing the name and price
+      const foodItems = lines.map(line => {
+        // Define a regular expression pattern to match the last whitespace character
+        const pattern = /\s+(?=\S*$)/;
+
+        // Split the line into name and price based on the pattern
+        const parts = line.split(pattern);
+
+        // Extract the name and price
+        const name = parts[0].trim(); // Extract the name and remove leading/trailing spaces
+        const price = parts[1];
+
+        // Return an object containing the name and price
+        return {name, price}
+      });
+
+      console.log(JSON.stringify(foodItems))
       fetch(
-        process.env.REACT_APP_API_URL + "api/upload",
+        process.env.REACT_APP_API_URL + "/api/upload",
         {
           method: "POST",
-          body: ret.data.text,
+          body: foodItems
         }
       )
         .then((response) => {
