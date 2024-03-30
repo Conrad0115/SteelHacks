@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -25,18 +28,28 @@ public class ApiController {
      * @return
      */
     @PostMapping("/api/upload")
+    @CrossOrigin
     public ResponseEntity<String> storeData(@RequestBody String itemCollection) {
+        System.out.println(itemCollection);
         ObjectMapper mapper = new ObjectMapper();
+        String path = "src/main/resources/csvFiles/temp.csv";
         try {
             JsonNode root = mapper.readTree(itemCollection);
             Iterator<JsonNode> it = root.elements();
+            JsonNode node;
+            String Result = "";
             while (it.hasNext()) {
-                JsonNode node = it.next();
+                node = it.next();
                 String name = node.get("name").asText();
-                // double price = node.get("price").asDouble();
-                // ItemCollection item = new ItemCollection(name, price);
-                // itemCollection.put(name, item);
+                double price = node.get("price").asDouble();
+                if(price < .1){
+                    continue;
+                }
+                Result += name + "," + Double.toString(price)+",";
+                System.out.println(Result);
             }
+            writeData write = new writeData();
+            write.process(Result);
             return ResponseEntity.ok("Data stored successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error storing data");

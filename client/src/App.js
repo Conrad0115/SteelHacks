@@ -53,21 +53,20 @@ function App() {
 
         // Extract the name and price
         const name = parts[0].trim(); // Extract the name and remove leading/trailing spaces
-        const price = parts[1];
+        const price = (parts[1]||"  ").substring(1);
 
         // Return an object containing the name and price
-        return { name: name, price: price };
+        return { name: name||"", price: price ||""};
       });
 
       console.log(JSON.stringify(foodItems));
+      console.log(process.env.REACT_APP_API_URL)
       fetch(process.env.REACT_APP_API_URL + "/api/upload", {
         method: "POST",
-        body: foodItems,
+        body: JSON.stringify(foodItems),
       })
         .then((response) => {
-          if (!response.ok) {
-            alert("Error uploading file");
-          }
+        
           return response.json();
         })
         .then((data) => {

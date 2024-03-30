@@ -6,40 +6,52 @@ import java.util.*;
 
 public class writeData {
 
-    String samPath = "resources/csvFiles/sampledata.csv";
-    String avgPath = "resources/csvFiles/ShoppingList.csv";
+    String samPath = "backend/src/main/resources/csvFiles/sampledata.csv";
+    String avgPath = "backend/src/main/resources/csvFiles/sampleAverage.csv";
 
-    public void process (List<List<String>> receipt) {
+    public void process (String Result) {
+        String[][] receipt = new String[Result.length()/2][2];
+        int counter = 0;
+        for(int i =0; i< receipt.length; i++){
+            for(int j =0; j<2; j++){
+                receipt[i][j] = Result.split(",")[counter];
+                System.out.println(receipt[i][j]);
+                counter ++;
+            }
+        }
         // write all data from receipt separated by commas to sample csv
-        try (BufferedWriter samWriter = new BufferedWriter(new FileWriter(samPath))) {
-            for (List<String> row : receipt) {
-                samWriter.write(String.join(",", row));
-                samWriter.newLine();
+        try (BufferedWriter samWriter = new BufferedWriter(new FileWriter(samPath,true))) {
+            for (String[] row : receipt) {
+                samWriter.write(row[0] +"," + getDate()+","+row[1]);
+
             }
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
         }
         // read the avg csv to see if item is contained there
         try (BufferedReader avgReader = new BufferedReader(new FileReader(avgPath))) {
-            for (List<String> row : receipt) {
-                if (!findItem(avgReader, row)) {
-                    firstWrite(row);
+            for (String[] row : receipt) {
+                if (!findItem(avgReader, row[0])) {
+                    List<String> toWrite = new ArrayList<>();
+                    toWrite.add(row[0]);
+                    toWrite.add((row[1]));
+                    firstWrite(toWrite);
                 }
             }
         } catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
         }
-        // call makeAVG
+        makeAvgs make = new makeAvgs(getDate());
     }
 
-    private boolean findItem(BufferedReader avgReader, List<String> row) throws IOException {
-        String name = row.get(0);
+    private boolean findItem(BufferedReader avgReader, String item) throws IOException {
+
         String line;
 
         while ((line = avgReader.readLine()) != null) {
             List<String> curr = Arrays.asList(line.split(","));
             String currItem = curr.get(0);
-            if (name.equals(currItem)) {
+            if (item.equals(currItem)) {
                 return true;
             }
         }
@@ -67,4 +79,5 @@ public class writeData {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         return dateFormat.format(currentDate);
     }
+
 }
