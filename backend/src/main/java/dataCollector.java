@@ -32,10 +32,10 @@ public class dataCollector {
                 recs.add(line.get(0));
             }
         }
-        int size = rec.size();
+        int size = recs.size();
         String[] toReturn = new String[size];
         for(int i =0; i<size; i++){
-            toReturn[i] = rec.get(i);
+            toReturn[i] = recs.get(i);
         }
         return toReturn;
         
@@ -52,7 +52,7 @@ public class dataCollector {
     public String[] getShoppingList(){
         List<List<String>> data = readCSV(ShoppingListFilename);
         String[] shoppingList = new String[data.size()];
-        for(int i=0; i< data.size; i++){
+        for(int i=0; i< data.size(); i++){
             shoppingList[i] = data.get(i).get(0);
         }
         return shoppingList;
