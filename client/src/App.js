@@ -30,20 +30,6 @@ function App() {
       });
   }, []);
 
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/api/getList")
-      .then((response) => {
-        console.log(response);
-       return  response.json();
-      })
-      .then((data) => {
-        console.log(data)
-        setShoppingList(data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
 
   // receipt
   const handleClick = () => {
@@ -96,11 +82,22 @@ function App() {
   };
 
   // Current list
-  const [shoppingList, setShoppingList] = useState([
-    { count: 1, name: "Cheddar" },
-    { count: 2, name: "Bananas" },
-    { count: 3, name: "Carrots" },
-  ]);
+  const [shoppingList, setShoppingList] = useState([ ]);
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + "/api/getList")
+      .then((response) => {
+        console.log(response);
+       return  response.json();
+      })
+      .then((data) => {
+        console.log(data)
+        setShoppingList(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
   const handleDecrement = (index) => {
     const newList = [...shoppingList];
     newList[index].count = Math.max(1, newList[index].count - 1); // Prevent going below 1

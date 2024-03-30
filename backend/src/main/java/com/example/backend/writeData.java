@@ -1,13 +1,14 @@
+package com.example.backend;
+
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class writeData {
 
-    String samPath = "./backend/src/main/resources/csvFiles/sampledata.csv";
-    String avgPath = "./backend/src/main/resources/csvFiles/sampleAverage.csv";
+    String samPath = "resources/csvFiles/sampledata.csv";
+    String avgPath = "resources/csvFiles/ShoppingList.csv";
 
-    public static ArrayList<String> getList() {
-
-    }
     public void process (List<List<String>> receipt) {
         // write all data from receipt separated by commas to sample csv
         try (BufferedWriter samWriter = new BufferedWriter(new FileWriter(samPath))) {
@@ -31,7 +32,7 @@ public class writeData {
         // call makeAVG
     }
 
-    private boolean findItem(avgReader, row) {
+    private boolean findItem(BufferedReader avgReader, List<String> row) throws IOException {
         String name = row.get(0);
         String line;
 

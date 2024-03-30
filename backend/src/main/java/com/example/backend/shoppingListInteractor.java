@@ -1,8 +1,9 @@
 package com.example.backend;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class shoppingListInteractor {
     String filePath = "resources/csvFiles/ShoppingListTestCopy.csv";

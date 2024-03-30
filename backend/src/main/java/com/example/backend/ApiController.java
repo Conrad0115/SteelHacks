@@ -24,7 +24,7 @@ public class ApiController {
      * @param itemCollection json file formatted [{ name: name1, price: price1 }, ...]
      * @return
      */
-    @PostMapping("/api/uploard")
+    @PostMapping("/api/upload")
     public ResponseEntity<String> storeData(@RequestBody String itemCollection) {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -65,7 +65,7 @@ public class ApiController {
     }
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/api/getList")
-    public String getList() {
+    public String getsList() {
         dataCollector dc = new dataCollector();
         String[] shoppingList = dc.getShoppingList();
         // break the array into json [A, B ] => ["A", "B"]
@@ -79,16 +79,6 @@ public class ApiController {
         }
         sb.append("]");
         return sb.toString();
-    }
-    @CrossOrigin
-    @PostMapping
-    public void addList(){
-
-    }
-    @CrossOrigin
-    @PostMapping
-    public void removeList(){
-
     }
 
 }
