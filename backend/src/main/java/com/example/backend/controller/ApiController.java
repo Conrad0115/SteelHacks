@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.backend.dataCollector;
+
 @RestController
 public class ApiController {
 
@@ -17,5 +19,6 @@ public class ApiController {
     public String processData(@RequestBody String data) {
         // Process the received data
         return "Data received: " + data;
+
     }
 }
