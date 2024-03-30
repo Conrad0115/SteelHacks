@@ -5,23 +5,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class shoppingListInteractor {
-    String fileName = "resources/csvFiles/ShoppingList.csv";
+    String filePath = "resources/csvFiles/ShoppingListTestCopy.csv";
 
     public void add(String item) throws IOException {
-        FileWriter fw = new FileWriter(fileName, true);
+        FileWriter fw = new FileWriter(filePath, true);
         BufferedWriter bw = new BufferedWriter(fw);
-        bw.write(item);
+        bw.write(item + "\n");
+        bw.close(); // REMEMBER TO CLOSE
     }
 
-    private List<List<String>> makeList(){
-        List<List<String>> data = new ArrayList<>();
+    private List<String> makeList(){
+        List<String> data = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader fileName)) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
 
-            while ((line = avgReader.readLine()) != null) {
-                List<String> row = Arrays.asList(line.split(","));
-                data.add(row);
+            while ((line = br.readLine()) != null) {
+                data.add(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -30,19 +30,29 @@ public class shoppingListInteractor {
     }
 
     public void remove(String item){
-        List<List<String>> data = makeList();
-        Iterator<List<String>> outerIterator = data.iterator();
-        while (outerIterator.hasNext()) {
-            List<String> innerList = outerIterator.next();
-            if (innerList.contains(item)) {
-                // Remove item flagged for delteion from
-                // inner list if found
-                outerIterator.remove();
+        List<String> data = makeList();
+        Iterator<String> iter = data.iterator();
+        while (iter.hasNext()) {
+            String str = iter.next();
+            if (str.equals(item)) {
+                // Remove item flagged for deletion
+                // from list if found
+                iter.remove();
             }
         }
-
+        overwriteCSV(data);
     }
 
+    private void overwriteCSV(List<String> data){
+        Iterator<String> iter = data.iterator();
 
-
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            while (iter.hasNext()) {
+                bw.write(iter.next() + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
