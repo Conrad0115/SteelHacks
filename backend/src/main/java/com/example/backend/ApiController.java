@@ -36,20 +36,27 @@ public class ApiController {
         try {
             JsonNode root = mapper.readTree(itemCollection);
             Iterator<JsonNode> it = root.elements();
-            JsonNode node;
-            String Result = "";
+            JsonNode node = it.next();
+            node = it.next();
             while (it.hasNext()) {
                 node = it.next();
-                String name = node.get("name").asText();
-                double price = node.get("price").asDouble();
-                if(price < .1){
+                if(node == null){
                     continue;
                 }
-                Result += name + "," + Double.toString(price)+",";
-                System.out.println(Result);
+                String name = node.get("name").asText();
+                double price = node.get("price").asDouble();
+
+                try (BufferedWriter samWriter = new BufferedWriter(new FileWriter(path))) {
+                    samWriter.write(name+","+price);
+                    samWriter.newLine();
+
+
+                } catch (IOException e) {
+                    System.err.println("Error writing to CSV file: " + e.getMessage());
+                }
+
+
             }
-            writeData write = new writeData();
-            write.process(Result);
             return ResponseEntity.ok("Data stored successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error storing data");
