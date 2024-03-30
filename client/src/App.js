@@ -1,39 +1,40 @@
-import {AppBar, Button, IconButton} from "@mui/material";
+import { AppBar, Button, IconButton } from "@mui/material";
 
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveIcon from "@mui/icons-material/Remove";
 import Divider from "@mui/material/Divider";
 import Input from "@mui/material/Input";
-import React, {useEffect, useRef, useState} from "react";
-import {createWorker} from "tesseract.js";
-import "./App.css";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import DeleteIcon from "@mui/icons-material/Delete";
+import React, { useEffect, useRef, useState } from "react";
+import { createWorker } from "tesseract.js";
+import "./App.css";
 
 function App() {
   const fileInputRef = useRef(null);
   const [recommendation, setRecommendation] = useState([
-    {name: "Apples"}, {
-      name: "Pear"
-    }
+    "Eggs",
+    "Pear",
+    "Watermelon",
   ]);
 
-  useEffect(
-    () => {
-      fetch(process.env.REACT_APP_API_URL + "/api/recommendation").then(
-        (response) => response.json()
-      ).then((data) => {
-          setRecommendation(data);
-        }
-      ).catch((error) => {
-          console.error("Error:", error);
-        }
-      )
-    }
-    , [recommendation])
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + "/api/recommendation")
+      .then((response) => {
+        console.log(response);
+       return  response.json();
+      })
+      .then((data) => {
+        console.log(data)
+        setRecommendation(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
 
-// receipt
+  // receipt
   const handleClick = () => {
     fileInputRef.current.click();
   };
@@ -58,7 +59,7 @@ function App() {
         const price = parts[1];
 
         // Return an object containing the name and price
-        return {name: name, price: price};
+        return { name: name, price: price };
       });
 
       console.log(JSON.stringify(foodItems));
@@ -83,12 +84,11 @@ function App() {
     // Do something with the uploaded file (e.g., send to server)
   };
 
-
   // Current list
   const [shoppingList, setShoppingList] = useState([
-    {count: 1, name: "Apples"},
-    {count: 2, name: "Bananas"},
-    {count: 3, name: "Carrots"},
+    { count: 1, name: "Eggs" },
+    { count: 2, name: "Bananas" },
+    { count: 3, name: "Carrots" },
   ]);
   const handleDecrement = (index) => {
     const newList = [...shoppingList];
@@ -106,12 +106,11 @@ function App() {
   };
   const handleAddNewItem = (name) => {
     if (!name.trim()) return;
-    const newItem = {count: 1, name};
+    const newItem = { count: 1, name };
     setShoppingList([...shoppingList, newItem]);
     // clear the input field
     document.getElementById("newItem").value = "";
   };
-
 
   return (
     <div
@@ -136,8 +135,8 @@ function App() {
           <h1>Title </h1>
           <Input
             type="file"
-            inputProps={{accept: "image/*, .pdf, video/*"}}
-            style={{display: "none"}}
+            inputProps={{ accept: "image/*, .pdf, video/*" }}
+            style={{ display: "none" }}
             inputRef={fileInputRef}
             onChange={handleFileUpload}
           />
@@ -155,23 +154,22 @@ function App() {
           justifyContent: "space-around",
         }}
       >
-
         <div>
           <h2>Recommendation</h2>
           <List>
             {/*filter out that already in shopping cart*/}
             {recommendation
-              .filter((item) => shoppingList.indexOf((x) => x.name === item) > -1)
+              .filter(
+                (item) =>
+                  !shoppingList.some((shoppingItem) => shoppingItem.name === item)
+              )
               .map((item, index) => (
-                <ListItem key={index}>
-                  {item.name}
-                </ListItem>
+                <ListItem key={index}>{item}</ListItem>
               ))}
           </List>
         </div>
 
-
-        <Divider variant="middle" orientation="vertical" flexItem/>
+        <Divider variant="middle" orientation="vertical" flexItem />
         <div
           style={{
             display: "flex",
@@ -182,14 +180,18 @@ function App() {
           <h2>Current List</h2>
           <List>
             <ListItem>
-              <Input variant="outlined"
-                     type="text" id="newItem" name="newItem"/>
+              <Input
+                variant="outlined"
+                type="text"
+                id="newItem"
+                name="newItem"
+              />
               <IconButton
                 onClick={() =>
                   handleAddNewItem(document.getElementById("newItem").value)
                 }
               >
-                <AddIcon/>
+                <AddIcon />
               </IconButton>
             </ListItem>
             {shoppingList.map((item, index) => (
@@ -202,29 +204,26 @@ function App() {
                 >
                   {item.count > 1 ? (
                     <IconButton onClick={() => handleDecrement(index)}>
-                      <RemoveIcon/>
+                      <RemoveIcon />
                     </IconButton>
                   ) : (
                     <IconButton onClick={() => handleDelete(index)}>
-                      <DeleteIcon/>
+                      <DeleteIcon />
                     </IconButton>
                   )}
                   {item.count}
                   <IconButton onClick={() => handleIncrement(index)}>
-                    <AddIcon/>
+                    <AddIcon />
                   </IconButton>
                 </div>
               </ListItem>
             ))}
           </List>
-          <Button onClick={() => setShoppingList([])}>
-            Clear List
-          </Button>
+          <Button onClick={() => setShoppingList([])}>Clear List</Button>
         </div>
       </div>
     </div>
-  )
-    ;
+  );
 }
 
 export default App;
