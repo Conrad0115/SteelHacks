@@ -13,9 +13,29 @@ public class ApiController {
         return "Hello from Spring Boot API!";
     }
 
-    @PostMapping("/data")
+    @GetMapping("/api/shopping-list")
+    public String getShoppingList() {
+        return "Milk, Bread, Eggs";
+    }
+
+    @GetMapping("/api/recommendation")
+    public String getRecommendation() {
+       dataCollector dc = new dataCollector();
+       String[] recommendations = dc.getReccomendations();
+       return "";
+    }
+
+    @PostMapping("/api/upload")
     public String processData(@RequestBody String data) {
-        // Process the received data
+
+        // Process the received data into two arrays, its json [{name: "John", price: 30}, ...]
+        String[] items = {};
+        String[] prices = {};
+
+
+
+
+
         return "Data received: " + data;
     }
 }
