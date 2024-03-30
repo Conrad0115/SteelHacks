@@ -81,7 +81,9 @@ function App() {
   };
 
   // Current list
-  const [shoppingList, setShoppingList] = useState([ ]);
+  const [shoppingList, setShoppingList] = useState([ 
+    {count:1,name:"apple",}, {count:2,name:"strawbery",}, {count:3, name:"Peppers"},{count:1,name:"Fruit Cake"}
+  ]);
   useEffect(() => {
     fetch(process.env.REACT_APP_API_URL + "/api/getList")
       .then((response) => {
