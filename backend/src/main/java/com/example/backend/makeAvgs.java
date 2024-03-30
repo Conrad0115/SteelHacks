@@ -1,12 +1,12 @@
-
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+
 public class makeAvgs{
-    String dataFileName = "src/sampledata.csv";
-    String avgFilename = "src/sampleAverage.csv";
+    String dataFileName = "backend/src/main/resources/csvFiles/sampledata.csv";
+    String avgFilename = "backend/src/main/resources/csvFiles/sampleAverage.csv";
     String Date;
 
     public makeAvgs(String date){
