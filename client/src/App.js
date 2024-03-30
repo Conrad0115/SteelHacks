@@ -1,12 +1,13 @@
-import { AppBar, Button } from "@mui/material";
+import {AppBar, Button} from "@mui/material";
 
 import Divider from "@mui/material/Divider";
 import Input from "@mui/material/Input";
-import { useRef } from "react";
+import {useRef} from "react";
 import "./App.css";
 import CurrentList from "./components/CurrentList";
 import Info from "./components/Info";
 import Recommendation from "./components/Recommendation";
+import {createWorker} from 'tesseract.js';
 
 function App() {
   const fileInputRef = useRef(null);
@@ -17,36 +18,44 @@ function App() {
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    // Do something with the uploaded file (e.g., send to server)
-    fetch(
-      process.env.REACT_APP_API_URL + "api/upload",
 
-      {
-        method: "POST",
-        body: file,
-      }
-    )
-      .then((response) => {
-        if (!response.ok) {
-          alert("Error uploading file");
+
+    (async () => {
+      const worker = await createWorker('eng');
+      const ret = await worker.recognize(file);
+      console.log(ret.data.text);
+      fetch(
+        process.env.REACT_APP_API_URL + "api/upload",
+        {
+          method: "POST",
+          body: ret.data.text,
         }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Success:", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      )
+        .then((response) => {
+          if (!response.ok) {
+            alert("Error uploading file");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Success:", data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+      await worker.terminate();
+    })();
+    // Do something with the uploaded file (e.g., send to server)
+
   };
   return (
     <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      height: "100vh",
-      width: "100vw",
-    }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        width: "100vw",
+      }}
     >
       <header>
         <AppBar
@@ -62,8 +71,8 @@ function App() {
           <h1>Title </h1>
           <Input
             type="file"
-            inputProps={{ accept: "image/*, .pdf, video/*" }}
-            style={{ display: "none" }}
+            inputProps={{accept: "image/*, .pdf, video/*"}}
+            style={{display: "none"}}
             inputRef={fileInputRef}
             onChange={handleFileUpload}
           />
@@ -81,11 +90,11 @@ function App() {
           justifyContent: "space-around",
         }}
       >
-        <Recommendation />
-        <Divider variant="middle" orientation="vertical" flexItem />
-        <CurrentList />
+        <Recommendation/>
         <Divider variant="middle" orientation="vertical" flexItem/>
-        <Info />
+        <CurrentList/>
+        <Divider variant="middle" orientation="vertical" flexItem/>
+        <Info/>
       </div>
     </div>
   );
